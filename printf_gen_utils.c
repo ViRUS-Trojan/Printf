@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   printf_gen_utils.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vdelsie <vdelsie@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/11/12 12:43:44 by vdelsie           #+#    #+#             */
+/*   Updated: 2019/11/12 12:45:21 by vdelsie          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include <unistd.h>
 #include <stdlib.h>
@@ -73,3 +84,27 @@ free(pad_str);
 }
 
 /*
+** pad_width ()
+** Функция для расчета заполнения, которое должно быть добавлено для заданной
+** ширины и для заданной ширины аргумента. Строго только пробелы
+** для предварительного спецификатора ширины.
+*/
+
+void    pad_width(t_vfpf *p, int arg_width)
+{
+    int final_pad_width
+
+    final_pad_width = p->width - arg_width;
+    pad(p, final_pad_width, ' ');
+}
+
+void    reset_printf(t_vfpf *p)
+{
+    p->flags = 0;
+    p->width = 0;
+    p->precision = 0;
+    p->base = 0;
+    p->specifier = '/0';
+    p->hex_int = 0;
+    p->neg = 0; 
+}
