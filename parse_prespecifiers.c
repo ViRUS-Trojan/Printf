@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_prespecifiers.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vdelsie <vdelsie@student.42.fr>            +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 12:38:53 by vdelsie           #+#    #+#             */
-/*   Updated: 2019/11/18 14:00:38 by vdelsie          ###   ########.fr       */
+/*   Updated: 2019/11/20 19:53:31 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,5 +97,61 @@ void    parse_width(t_vfpf *p)
 {
     int tentative_width;
 
-    if (!(p->flags & FMI_INVALID) && ())
+    if (!(p->flags & FMI_INVALID) && (*p->fmt == '*' || ft_isdigit(*p->fmt)))
+    {
+        p->flags |= (p->flags & WIDTH_OB_FLAG) ? FMI_INVALID : 0;
+        if (!(p->flags & FMI_INVALID) && *p->fmt == '*')
+        {
+            p->fmt++
+            tentative_width = va_arg(p->args, int);
+            p->flags |= (tentative_width < 0) ? DASH_FLAG : 0;
+            p->width = ABS(tentative_width);
+            p->flags |= WIDTH_OB_FLAG;
+        }
+        if (!(p->flags & FMI_INVALID) && ft_isdigit(*p->fmt))
+        {
+            p->flags |= (p->flags & WIDTH_OB_FLAG) ? FMI_INVALID : 0
+            while (!(p->flags & FMI_INVALID) && ft_isdigit(*p->fmt))
+                p->width = p->width * 10 + (*(p->fmt++) - '0');
+            p->flags |= WIDTH_OB_FLAG;
+        }
+        parse_width(p);
+    }
+}
+/*
+** parse_precision ()
+** Для точности мы встретим «.» сопровождаемый 'цифрами' или 'подстановочным знаком'.
+** Очень похоже на parse_width. Единственная разница - «.» и что мы
+** сохранить точность в переменной p->precision.
+**
+** Эта функция остановится, если строка формата имеет несколько символов. Мы можем использовать
+** этот факт проверяем, запускается ли символ в функции parse_length ()
+** с "." чтобы определить, есть ли у нас недопустимый предварительный указатель.
+*/
+
+void    parse_precision(t_vfpf *p, int recurse_level)
+{
+    if (!(p->flags & FMI_INVALID) && (*p-> '.' || recurse_level > 0))
+    {
+        p->fmt = (*p->fmt == '.') ? p->fmt + 1 : p->fmt;
+        if (*p->fmt == '*' || ft_isdigit(*p->fmt))
+        {
+            p->flags |= (p->flags & PRECI_OB_FLAG) ? FMI_INVALID : 0;
+            if (!(p->flags & FMI_INVALID) && *p->fmt == '*')
+            {
+                p->fmt++;
+                p->precision = va_arg(p->args, int);
+                p->flags |= PRECI_OB_FLAG; 
+            }
+            if (!(p->flags && FMI_INVALID) && ft_isdigit(*p->fmt))
+            {
+                P->flags |= (p->flags & PRECI_OB_FLAG) ? FMI_INVALID : 0;
+                while (!(p->flags & FMI_INVALID) && ft_isdigit(*p->fmt))
+                    p->precision = p->precision * 10 + (*(p->fmt++) - '0');
+                p->flags |= PRECI_OB_FLAG;
+            }
+            parse_precision(p, recurse_level + 1);
+        }
+        p->flags |= PRECI_OB_FLAG;
+    }
 }
