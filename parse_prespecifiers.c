@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_prespecifiers.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: vdelsie <vdelsie@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 12:38:53 by vdelsie           #+#    #+#             */
-/*   Updated: 2019/11/20 19:53:31 by marvin           ###   ########.fr       */
+/*   Updated: 2019/12/06 17:59:39 by vdelsie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,4 +154,79 @@ void    parse_precision(t_vfpf *p, int recurse_level)
         }
         p->flags |= PRECI_OB_FLAG;
     }
+}
+
+
+/*
+** parse_long_length ()
+** Эта функция будет широко использоваться (потенциально) для длинных опций:
+** h, hh, l, и ll
+**
+** Если мы заинтересованы в строке
+** Если мы уже получили длину ранее
+** Если у нас есть один флаг И нет двойного флага
+** Используйте битовый xor, чтобы установить одиночный флаг в 0
+** Используйте побитовое или установите двойной флаг в 1
+** еще
+** У нас неверный формат в наших руках ...
+** еще
+** Использовать побитовый или установить или один флаг в 1
+** Установите нашу длину получил флаг 1
+*/
+
+static void     parse_long_length(t_vfpf *p, char c, int s_flag, int d_flag)
+{
+    if (*p->fmt == c)
+    {
+        if (p->flags & LEN_OB_FLAG)
+        {
+            if ((p->flags & s_flag) && !(p->flags & d_flag))
+            {
+                p->flags ^= s_flag;
+                p->flags ^= d_flag;
+            }
+            else
+                p->flags |= FMI_INVALID;
+        }
+        else
+        {
+            p->flags |= s_flag;
+            p->flags |= LEN_OB_FLAG;
+        }
+    }
+} 
+
+/*
+** parse_length ()
+** Эта функция будет анализировать все наши параметры длины. Надо рекурсивно звонить
+** для проверки сумасшедших опций, таких как «hhh» или «jzjz» или «hj» или «hhL».
+**
+** Как уже упоминалось в parse_precision (), мы также проверяем «.» в коробке
+** что строка формата имеет несколько символов '.
+*/
+
+void    parse_length(t_vfpf *p)
+{
+    if (!(p->flags & FMI_INVALID) && IS_LEN (*p->fmt))
+    {
+        parse_long_length(p, h, H_FLAG, HH_FLAG);
+        parse_long_length(p, l, L_FLAG, LL_FLAG);
+        if (IS_LEN (*p->fmt))
+        {
+            if (!(p->flags & LEN_OB_FLAG))
+            {
+                p->flags |= (*p->fmt == 'j') ? J_FLAG : 0;
+                p->flags |= (*p->fmt == 'L') ? FLOAT_L_FLAG : 0;
+                p->flags |= (*p->fmt == 't') ? T_FLAG : 0;
+                p->flags |= (*p->fmt == 'z') ? Z_FLAG : 0;
+                p->flags |= LEN_OB_FLAG;
+            }
+            else
+                p->flags |= FMI_INVALID;
+        }
+        p->fmt++;
+        parse_length(p);
+    }
+    else if (*p->fmt == '.')
+        p->flags |= FMI_INVALID;
 }
