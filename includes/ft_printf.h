@@ -104,6 +104,7 @@ union                   u_union
 ** Основные функции printf!
 ** Зачем нужен vfprintf? Смотрите: https://stackoverflow.com/questions/1485805/
 */
+
 int                     ft_vfprintf(int fd, const char *format, va_list args);
 int                     ft_printf(const char *format, ...);
 
@@ -116,5 +117,60 @@ void                    buff(t_vfpf *p, const void *s, size_t nbyte);
 void                    pad(t_vfpf *p, int pad_len, char pad_char);
 void                    pad_width(t_vfpf *p, int arg_width);
 void                    reset_printf(t_vfpf *p);
+
+/*
+**	double_handlers.c
+*/
+
+long double		        get_ld_arg(t_vfpf *p, size_t *len, int base);
+void			        handle_double(t_vfpf *p);
+
+/*
+**	parse_specifier.c
+**
+** После анализа предварительных спецификаторов мы будем использовать таблицу переходов, чтобы получить правильные
+** обработчики для всех возможных спецификаторов.
+** спецификаторы: '%', 'dDi', 'oOuUxX', 'fFeEgGaA', 'cC', 'sS', 'p', 'n'
+*/
+
+typedef void	        (*t_jumptable)(t_vfpf *p);
+t_jumptable		        get_handler_funct(char c);
+
+/*
+**	int_handlers.c
+**	handles 'dD', and 'i' specifiers
+*/
+
+void			         handle_int(t_vfpf *p);
+
+/*
+**	hard_double_handlers.c - в настоящее время не реализовано ...
+*/
+void			handle_double_sci(t_vfpf *p);
+void			handle_double_shortest(t_vfpf *p);
+void			handle_double_hex(t_vfpf *p);
+
+/*
+**	parse_prespecifiers.c
+**
+**	Мы разделим на отдельные шаги разбора:
+**	[flags]: '-', '+', ' ', '#', '0'
+**	[width]: 'number', '*'
+**	[.precision]: '.number', '.*'
+**	[length]: '(none)', 'hh', 'h', 'l', 'll', 'j', 'z', 't', 'L'
+*/
+
+void			parse_flags(t_vfpf *p);
+void			parse_width(t_vfpf *p);
+void			parse_precision(t_vfpf *p, int recurse_level);
+void			parse_length(t_vfpf *p);
+
+/*
+**	printf_double_utils.c
+*/
+
+void			pf_ldtoa_base(t_vfpf *p, long double nbr, size_t int_len,
+							size_t tot_len);
+void			handle_double_prepad(t_vfpf *p, int nbr_len);
 
 # endif

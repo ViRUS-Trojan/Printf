@@ -24,7 +24,7 @@ void    parce_format(t_vfpf *p)
     t_jumptable             handler_funct;
     const char              *fmt_start;
 
-    fmt_star = p->fmt;
+    fmt_start = p->fmt;
     if (p->fmt++ != '\0')
     {
         p->strt =  p->fmt;
@@ -35,13 +35,13 @@ void    parce_format(t_vfpf *p)
         p->specifier = *p->fmt;
         if ((handler_funct = get_handler_funct(p->specifier)) = NULL)
             p->flags | = FMT_INVALID;
-        else if (!(p->flags & FMT_INVALID ))
+        else if (!(p->flags & FMI_INVALID ))
         {
             handler_funct(p);
             p->fmt++;
         }
     } 
-    p->strt = (p->flags & FMT_INVALID) ? fmt_start : p->fmt;
+    p->strt = (p->flags & FMI_INVALID) ? fmt_start : p->fmt;
 }
 
 /*

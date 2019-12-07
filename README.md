@@ -8,8 +8,10 @@
 При компиляции не забудьте связать библиотеку libftprintf.a. Пример:
 gcc -I включает -o my_program my_file.c my_other_file.c -L. -lftprintf
 Тогда просто запустите свою программу!
+
 Полезные ресурсы
 Вот некоторые ресурсы, которые я лично нашел очень полезными для этого проекта! Удачи, если вы также решите это!
+
 http://www.cplusplus.com/reference/cstdio/printf/
 https://wpollock.com/CPlus/PrintfRef.htm
 http://en.cppreference.com/w/c/variadic
