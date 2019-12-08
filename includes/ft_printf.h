@@ -173,4 +173,10 @@ void			pf_ldtoa_base(t_vfpf *p, long double nbr, size_t int_len,
 							size_t tot_len);
 void			handle_double_prepad(t_vfpf *p, int nbr_len);
 
+/*
+**	printf_int_utils.c
+*/
+void			pf_itoa_base(t_vfpf *p, uintmax_t nbr, int nbr_len);
+void			handle_int_prepad(t_vfpf *p, int nbr_len, int signed_int);
+
 # endif
