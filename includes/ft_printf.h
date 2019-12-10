@@ -179,4 +179,27 @@ void			handle_double_prepad(t_vfpf *p, int nbr_len);
 void			pf_itoa_base(t_vfpf *p, uintmax_t nbr, int nbr_len);
 void			handle_int_prepad(t_vfpf *p, int nbr_len, int signed_int);
 
+/*
+**	printf_utf_utils.c
+*/
+size_t			pf_wcharlen(wchar_t wc);
+size_t			pf_wstrlen(wchar_t *wstr);
+void			pf_putchar(t_vfpf *p, char c);
+void			pf_putwchar(t_vfpf *p, wint_t wc);
+void			pf_putwstr(t_vfpf *p, wchar_t *wstr, size_t wlen);
+
+/*
+**	special_handlers.c
+**	обрабатывает спецификаторы "%" и "n".
+*/
+void			handle_escape(t_vfpf *p);
+void			handle_n(t_vfpf *p);
+
+/*
+**	str_char_handlers.c
+**	обрабатывает спецификаторы 'cC' и 'sS'
+*/
+void			handle_char(t_vfpf *p);
+void			handle_str(t_vfpf *p);
+
 # endif
