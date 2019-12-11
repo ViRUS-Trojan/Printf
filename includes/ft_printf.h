@@ -202,4 +202,12 @@ void			handle_n(t_vfpf *p);
 void			handle_char(t_vfpf *p);
 void			handle_str(t_vfpf *p);
 
+/*
+**	uint_handlers.c
+**	обрабатывает спецификаторы 'oO', 'uU', 'xX' и 'p'
+*/
+void			handle_unsigned_int_oct(t_vfpf *p);
+void			handle_unsigned_int_dec(t_vfpf *p);
+void			handle_unsigned_int_hex(t_vfpf *p);
+
 # endif

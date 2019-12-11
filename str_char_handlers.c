@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   str_char_handlers.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: vdelsie <vdelsie@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/10 16:30:30 by vdelsie           #+#    #+#             */
-/*   Updated: 2019/12/11 01:30:07 by marvin           ###   ########.fr       */
+/*   Updated: 2019/12/11 18:08:10 by vdelsie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,4 +120,95 @@ size_t      calc_precision(wchar_t *str, int precision, size_t new_prec)
 		return (calc_precision(str + 1, precision - 4, new_prec + 4));
 	else
 		return (new_prec);
+}
+
+/*
+** Рабочая версия!
+*/
+
+void        handle_wstr(t_vfpf *p)
+{
+    int     pf;
+    wchar_t *wstr;
+    int     wslen;
+
+    pf = p->flags;
+    if ((wstr = va_arg(p->args, wchar_t *)) == NULL)
+        wstr = L "(null)";
+    wslen = (int) pf_wstrlen(wstr);
+    p->precision = (int) calc_precision(wstr, p->precision, 0);
+    if (p->precision < 0)
+        p->precision = wslen;
+    p->precision = (p->precision > wslen) ? wslen : p->precision;
+    wslen = (pf &  PRECI_OB_FLAG) ? p->precision : wslen;
+    if (pf & WIDTH_OB_FLAG && !(pf & DASH_FLAG))
+        pad_width(p, wslen);
+    pf_putwstr(p, wstr, wslen);
+    if (pf & WIDTH_OB_FLAG && (pf & DASH_FLAG))
+        pad_width(p, wslen);
+}
+
+/*
+** Умышленно покалеченная версия!
+**
+** void handle_wstr (t_vfpf * p)
+** {
+** INT пф;
+** wchar_t * WSTR;
+** символ * ул;
+** INT SLEN;
+**
+** pf = p-> flags;
+** if ((wstr = va_arg (p-> args, wchar_t *)) == NULL)
+** wstr = L "(null)";
+** slen = (int) pf_wstrlen (wstr);
+** если (р-> точность <0)
+** p-> точность = slen;
+** p-> точность = (p-> точность> slen)? slen: p-> точность;
+** slen = (pf & PRECI_OB_FLAG)? Точность: Slen;
+** if (pf & WIDTH_OB_FLAG &&! (pf & DASH_FLAG))
+** pad_width (p, slen);
+** str = (char *) wstr;
+** pf_putwstr (p, wstr, slen);
+** if (pf & WIDTH_OB_FLAG && (pf & DASH_FLAG))
+** pad_width (p, slen);
+**}
+*/
+
+/*
+** handle_str ()
+** Наш общий обработчик str, если мы имеем дело с широкими str (юникод), то
+** отправьте его обработчику wstr, который очень похож, в противном случае:
+** 1) Найдите длину нашей строки (slen)
+** 2) Точность и применение при необходимости
+** 3) Если у нас есть отрицательная точность (почему?) По умолчанию для длины строки
+** 4) левая обивка (если применимо)
+** 5) Наша строка
+** 6) правый отступ (если применимо)
+*/
+
+void    handle_str(t_vfpf *p)
+{
+    int     pf;
+    char    *str;
+    int     slen;
+
+    pf = pf->flags;
+    if (pf & L_FLAG || P->specifier == 'S')
+        handle_wstr(p);
+    else
+    {
+        if ((str = va_arg (p->args, char *)) == NULL)
+            str = "(null)";
+        slen = (int)pf_strlen(str);
+        if (p->precision < 0)
+            p->precision = slen;
+        p->precision = (p->precision > slen) ? slen : p->precision;
+        slen = (pf & PRECI_OB_FLAG) ? p->precision : slen;
+        if (pf & WIDTH_OB_FLAG && !(pf & DASH_FLAG))
+            pad_width(p, slen);
+        buff(p, str, slen);
+        if (pf & WIDTH_OB_FLAG && (pf & DASH_FLAG))
+            pad_width(p, slen;)
+    }
 }
